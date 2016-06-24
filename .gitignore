@@ -1,0 +1,6 @@
+
+ansible
+!ansible/.gitkeep
+
+# Vagrant files
+.vagrant
