@@ -4,3 +4,4 @@ ansible
 
 # Vagrant files
 .vagrant
+servers.yml

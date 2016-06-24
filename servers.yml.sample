@@ -1,0 +1,40 @@
+---
+# Managed servers definition
+# 
+# Each server definition can set:
+#
+# - A unique name  
+#   Required. Can not be `manager`
+# - An IP address  
+#   Optionnal. Defaults to `192.168.20.#{index}`, where 'index' is the
+#   position of the servers in the servers array (indexes start at 0)
+# - A hash of forwarded ports  
+#   Optionnal. Defaults to `{ '80': (8000 + index) }`
+# - A SSH configuration  
+#   Optionnal. Will be added to `/home/vagrant/.ssh/config` inside the
+#   `manager` VM.
+#
+# Example:
+#
+#     - name: "server-10"
+#       ip: "192.168.20.10"
+#       ports:
+#         80:  8010
+#         443: 8410
+#       ssh: |
+#         Host server-10
+#           User someuser
+#           IdentityFile ~/.ssh/somekey.rsa
+#
+
+- name: "ruby"
+  ssh: |
+    Host ruby
+      User administrator
+      IdentityFile ~/ansible/host_vars/keys/administrator.ruby.rsa
+
+- name: "php"
+  ssh: |
+    Host php
+      User administrator
+      IdentityFile ~/ansible/host_vars/keys/administrator.php.rsa
