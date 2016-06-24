@@ -24,7 +24,8 @@ You must have [Vagrant](https://vagrantup.com) installed on your machine.
 4. Connect to the `manager` VM with `vagrant ssh manager`  
    Enter the `ansible` directory and start managing your servers. 
 
-You can find a sample Ansible configuration in my `ansible-config-webservers` repository.
+You can find a sample Ansible configuration in [my `ansible-config-webservers` 
+repository](https://github.com/gael-ian/ansible-config-webservers).
 
 ## Inspirations
 
@@ -36,3 +37,4 @@ These settings were inspired by this sysadmincast.com serie :
 4. [Zero-downtime deployments with Ansible](https://sysadmincasts.com/episodes/47-zero-downtime-deployments-with-ansible-part-4-4)
 
 I encourage you to watch at least the first 3 episodes for an intelligible presentation of Ansible.
+
