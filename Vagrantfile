@@ -13,7 +13,7 @@ end
 Vagrant.configure(2) do |config|
 
   # Common configuration
-  config.vm.box = "debian/contrib-jessie64"
+  config.vm.box = "bento/debian-8.5"
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "256"
   end
