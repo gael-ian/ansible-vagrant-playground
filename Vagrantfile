@@ -54,12 +54,15 @@ Vagrant.configure(2) do |config|
     end
     
     m.vm.provision :shell do |p|
+      ssh_keyscan = servers.collect{ |s| [ s['ip'], s['name'] ] }.flatten.join(' ')
+      ssh_configs = servers.collect{ |s| (s['ssh'] || '') }.join("\n")
+      
       p.name   = "configure-ssh"
       p.inline = <<-PROVISION.gsub(/^[ \t]{8}/, '')
-        ssh-keyscan #{servers.collect{ |s| [ s['ip'], s['name'] ] }.flatten.join(' ')} >> /home/vagrant/.ssh/known_hosts 2>/dev/null
+        ssh-keyscan #{ssh_keyscan} >> /home/vagrant/.ssh/known_hosts 2>/dev/null
         ssh-keygen -t rsa -b 2048 -f /home/vagrant/.ssh/id_rsa -q -P ""
         cat >> /home/vagrant/.ssh/config <<-EOL
-        #{servers.collect{ |s| (s['ssh'] || '') }.join("\n")}
+        #{ssh_configs}
         EOL
         chown -R vagrant:vagrant /home/vagrant/.ssh/*
         chmod -R 600 /home/vagrant/.ssh/*
