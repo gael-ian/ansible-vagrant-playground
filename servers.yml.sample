@@ -2,12 +2,13 @@
 # Managed servers definition
 # 
 # Each server definition can set:
+# _In every of the followings, 'index' refers to the position of the
+# server in the servers array (indexes start at 0)._
 #
 # - A unique name  
-#   Required. Can not be `manager`
+#   Optionnal. Can not be `manager`. Defaults to `server-#{index}`.
 # - An IP address  
-#   Optionnal. Defaults to `192.168.20.#{index}`, where 'index' is the
-#   position of the servers in the servers array (indexes start at 0)
+#   Optionnal. Defaults to `192.168.20.#{index}`.
 # - A hash of forwarded ports  
 #   Optionnal. Defaults to `{ '80': (8000 + index) }`
 # - A SSH configuration  
