@@ -18,7 +18,8 @@ You must have [Vagrant](https://vagrantup.com) installed on your machine.
 1. Copy `servers.yml.sample` to `servers.yml` and edit it  
    Define as many managed servers as you need in this file. See comments on top of the sample file for details.
 2. Put your Ansible configuration in the `ansible` directory  
-   It will be mounted in the `manager` VM at `/home/vagrant/ansible`.
+   It will be mounted in the `manager` VM at `/home/vagrant/ansible`.  
+   You can also store the `servers.yml` file in the `ansible` directory if you want to carry them together.
 3. Build VMs with `vagrant up`  
    And go grab some coffee :o)
 4. Connect to the `manager` VM with `vagrant ssh manager`  

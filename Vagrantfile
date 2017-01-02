@@ -1,9 +1,15 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Load servers definition
 require 'yaml'
-servers = YAML.load_file('servers.yml').each.with_index do |server, index|
+
+# Load servers definition
+servers_definition = [ '../servers.yml', '../ansible/servers.yml' ].
+                       map{ |p| File.expand_path(p, __FILE__) }.
+                       select{ |p| File.exists?(p) }.
+                       first
+
+servers = YAML.load_file(servers_definition).each.with_index do |server, index|
   server['name'] ||= "server-#{index}"
   server['ip']   ||= "192.168.50.#{20 + index}"
   server['ports']  = { '80': (8000 + index) }.merge(server['ports'] || {})
