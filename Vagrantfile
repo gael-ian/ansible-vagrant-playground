@@ -10,9 +10,10 @@ servers_definition = [ '../servers.yml', '../ansible/servers.yml' ].
                        first
 
 servers = YAML.load_file(servers_definition).each.with_index do |server, index|
-  server['name'] ||= "server-#{index}"
-  server['ip']   ||= "192.168.50.#{20 + index}"
-  server['ports']  = { '80': (8000 + index) }.merge(server['ports'] || {})
+  server['name']  ||= "server-#{index}"
+  server['ip']    ||= "192.168.50.#{20 + index}"
+  server['ports']   = { '80': (8000 + index) }.merge(server['ports'] || {})
+  server['folders'] = (server['folders'] || {})
 end
 
 # Vagrant configuration
@@ -32,6 +33,12 @@ Vagrant.configure(2) do |config|
 
       server['ports'].each do |guest, host|
         m.vm.network "forwarded_port", guest: guest.to_s.to_i, host: host.to_s.to_i
+      end
+
+      server['folders'].each do |guest_bind_path, options|
+        guest_mount_path = "/vagrant-#{guest_bind_path.gsub('/', '-')}"
+        m.vm.synced_folder options['source'], guest_mount_path
+        m.bindfs.bind_folder guest_mount_path, guest_bind_path, (options['bindfs'] || {})
       end
     end
   end

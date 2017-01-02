@@ -14,6 +14,8 @@
 # - A SSH configuration  
 #   Optionnal. Will be added to `/home/vagrant/.ssh/config` inside the
 #   `manager` VM.
+# - A set of shared folders
+#   Optionnal. Defaults to none
 #
 # Example:
 #
@@ -22,6 +24,10 @@
 #       ports:
 #         80:  8010
 #         443: 8410
+#       folders:
+#         path/on/guest:
+#           source: path/on/host
+#           bindfs: { owner: 'another-user' }
 #       ssh: |
 #         Host server-10
 #           User someuser
