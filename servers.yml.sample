@@ -27,6 +27,7 @@
 #       folders:
 #         path/on/guest:
 #           source: path/on/host
+#           synced: { type: 'nfs' }
 #           bindfs: { owner: 'another-user' }
 #       ssh: |
 #         Host server-10

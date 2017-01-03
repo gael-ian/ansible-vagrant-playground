@@ -37,8 +37,17 @@ Vagrant.configure(2) do |config|
 
       server['folders'].each do |guest_bind_path, options|
         guest_mount_path = "/vagrant-#{guest_bind_path.gsub('/', '-')}"
-        m.vm.synced_folder options['source'], guest_mount_path
-        m.bindfs.bind_folder guest_mount_path, guest_bind_path, (options['bindfs'] || {})
+        synced_options   = (options['synced'] || {}).reduce({}) do |opts, (name, value)|
+                             opts[name] = value == 'nil' ? nil : value.to_s
+                             opts
+                           end
+        bindfs_options   = (options['bindfs'] || {}).reduce({}) do |opts, (name, value)|
+                             opts[name] = value == 'nil' ? nil : value.to_s
+                             opts
+                           end
+
+        m.vm.synced_folder options['source'], guest_mount_path, synced_options
+        m.bindfs.bind_folder guest_mount_path, guest_bind_path, bindfs_options
       end
     end
   end
