@@ -82,7 +82,7 @@ Vagrant.configure(2) do |config|
       p.name   = "configure-ssh"
       p.inline = <<-PROVISION.gsub(/^[ \t]{8}/, '')
         ssh-keyscan #{ssh_keyscan} >> /home/vagrant/.ssh/known_hosts 2>/dev/null
-        ssh-keygen -t rsa -b 2048 -f /home/vagrant/.ssh/id_rsa -q -P ""
+        [ -f /home/vagrant/.ssh/id_rsa ] || ssh-keygen -t rsa -b 2048 -f /home/vagrant/.ssh/id_rsa -q -P ""
         cat >> /home/vagrant/.ssh/config <<-EOL
         #{ssh_configs}
         EOL
