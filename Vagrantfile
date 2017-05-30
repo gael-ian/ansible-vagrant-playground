@@ -65,12 +65,15 @@ Vagrant.configure(2) do |config|
     m.vm.provision :shell do |p|
       p.name   = "configure-hosts"
       p.inline = <<-PROVISION.gsub(/^[ \t]{8}/, '')
+        sed -ie '/^#-provision-start-#/,/^#-provision-end-#/d' /etc/hosts && \
         cat >> /etc/hosts <<-EOL
-        
+        #-provision-start-#
+
         # Vagrant nodes
         192.168.50.10  manager
         #{servers.collect{ |s| "#{s['ip']}  #{s['name']}" }.join("\n")}
-          
+
+        #-provision-end-#
         EOL
       PROVISION
     end
@@ -83,8 +86,11 @@ Vagrant.configure(2) do |config|
       p.inline = <<-PROVISION.gsub(/^[ \t]{8}/, '')
         ssh-keyscan #{ssh_keyscan} >> /home/vagrant/.ssh/known_hosts 2>/dev/null
         [ -f /home/vagrant/.ssh/id_rsa ] || ssh-keygen -t rsa -b 2048 -f /home/vagrant/.ssh/id_rsa -q -P ""
+        sed -ie '/^#-provision-start-#/,/^#-provision-end-#/d' /home/vagrant/.ssh/config && \
         cat >> /home/vagrant/.ssh/config <<-EOL
+        #-provision-start-#
         #{ssh_configs}
+        #-provision-end-#
         EOL
         chown -R vagrant:vagrant /home/vagrant/.ssh/*
         chmod -R 600 /home/vagrant/.ssh/*
