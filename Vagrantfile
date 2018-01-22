@@ -3,6 +3,8 @@
 
 require 'yaml'
 
+manager_ip = "192.168.50.5"
+
 # Load servers definition
 servers_definition = [ '../servers.yml', '../ansible/servers.yml' ].
                        map{ |p| File.expand_path(p, __FILE__) }.
@@ -20,7 +22,7 @@ end
 Vagrant.configure(2) do |config|
 
   # Common configuration
-  config.vm.box = "bento/debian-8.5"
+  config.vm.box = "bento/debian-9"
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "512"
   end
@@ -55,7 +57,7 @@ Vagrant.configure(2) do |config|
   # Management node
   config.vm.define :manager do |m|
     m.vm.hostname = "manager"
-    m.vm.network "private_network", ip: "192.168.50.10"
+    m.vm.network "private_network", ip: manager_ip
 
     m.vm.synced_folder "ansible/",  "/home/vagrant/ansible"
     
@@ -63,35 +65,54 @@ Vagrant.configure(2) do |config|
     m.vm.provision :shell, name: "install-ansible", path: "install-ansible.sh"
     
     m.vm.provision :shell do |p|
+      hosts_configs = servers.collect do |server|
+        <<-EOL
+        sed -ie '/^#-provision-start-#{server['name']}-#/,/^#-provision-end-#{server['name']}-#/d' /etc/hosts && \
+        cat >> /etc/hosts <<-HOSTS
+        #-provision-start-#{server['name']}-#
+        
+        #{server['ip']}  #{server['name']}
+        
+        #-provision-end-#{server['name']}-#
+        HOSTS
+        EOL
+      end.join("\n")
+
       p.name   = "configure-hosts"
       p.inline = <<-PROVISION.gsub(/^[ \t]{8}/, '')
-        sed -ie '/^#-provision-start-#/,/^#-provision-end-#/d' /etc/hosts && \
-        cat >> /etc/hosts <<-EOL
-        #-provision-start-#
-
-        # Vagrant nodes
-        192.168.50.10  manager
-        #{servers.collect{ |s| "#{s['ip']}  #{s['name']}" }.join("\n")}
-
-        #-provision-end-#
-        EOL
+        sed -ie '/^#-provision-start-manager-#/,/^#-provision-end-manager-#/d' /etc/hosts && \
+        cat >> /etc/hosts <<-HOSTS
+        #-provision-start-manager-#
+        
+        #{manager_ip} manager
+        
+        #-provision-end-manager-#
+        HOSTS
+        #{hosts_configs}
       PROVISION
     end
     
     m.vm.provision :shell do |p|
       ssh_keyscan = servers.collect{ |s| [ s['ip'], s['name'] ] }.flatten.join(' ')
-      ssh_configs = servers.collect{ |s| (s['ssh'] || '') }.join("\n")
+      ssh_configs = servers.collect do |server|
+        <<-EOL
+        sed -ie '/^#-provision-start-#{server['name']}-#/,/^#-provision-end-#{server['name']}-#/d' /home/vagrant/.ssh/config && \
+        cat >> /home/vagrant/.ssh/config <<-SSH
+        #-provision-start-#{server['name']}-#
+
+        #{server['ssh']}
+
+        #-provision-end-#{server['name']}-#
+        SSH
+        EOL
+      end.join("\n")
       
       p.name   = "configure-ssh"
       p.inline = <<-PROVISION.gsub(/^[ \t]{8}/, '')
         ssh-keyscan #{ssh_keyscan} >> /home/vagrant/.ssh/known_hosts 2>/dev/null
         [ -f /home/vagrant/.ssh/id_rsa ] || ssh-keygen -t rsa -b 2048 -f /home/vagrant/.ssh/id_rsa -q -P ""
-        sed -ie '/^#-provision-start-#/,/^#-provision-end-#/d' /home/vagrant/.ssh/config && \
-        cat >> /home/vagrant/.ssh/config <<-EOL
-        #-provision-start-#
+        [ -f /home/vagrant/.ssh/config ] || touch /home/vagrant/.ssh/config  
         #{ssh_configs}
-        #-provision-end-#
-        EOL
         chown -R vagrant:vagrant /home/vagrant/.ssh/*
         chmod -R 600 /home/vagrant/.ssh/*
       PROVISION
