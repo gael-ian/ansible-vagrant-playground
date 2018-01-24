@@ -10,7 +10,7 @@ echo "Installing Ansible dependencies"
 apt-get -qq install build-essential libssl-dev libffi-dev python-dev python-pip sshpass rsync > /dev/null
 
 echo "Installing Ansible"
-pip install -qq --upgrade pip setuptools
+pip install -qq --upgrade pip setuptools jmespath
 pip install -qq --upgrade ansible
 
 unset DEBIAN_FRONTEND
