@@ -24,13 +24,26 @@
 #       ports:
 #         80:  8010
 #         443: 8410
-#       folders:
-#         path/on/guest:
-#           source: path/on/host
-#           synced: { type: 'nfs' }
-#           bindfs: { owner: 'another-user' }
+#
 #       ssh: |
 #         Host server-10
 #           User someuser
 #           IdentityFile ~/.ssh/somekey.rsa
+#
+#       folders:
+#         'path/on/guest':
+#           source: "path/on/host"
+#
+#           # Explicitly enable this shared folder. Required
+#           #
+#           # This allows you to keep your configuration in this file
+#           # without effectively be sharing folder(s) with the VM (i.e.
+#           # before Ansible provisioning has been applied).
+#           enabled: true
+#
+#           # Vagrant shared folder options
+#           synced: { type: 'nfs' }
+#
+#           # bindfs options
+#           bindfs: { owner: 'another-user' }
 #
