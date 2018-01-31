@@ -14,7 +14,7 @@ servers_definition = [ '../servers.yml', '../ansible/servers.yml' ].
 servers = YAML.load_file(servers_definition).each.with_index do |server, index|
   server['name']  ||= "server-#{index}"
   server['ip']    ||= "192.168.50.#{20 + index}"
-  server['ports']   = { '80': (8000 + index) }.merge(server['ports'] || {})
+  server['ports']   = { '80' => (8000 + index) }.merge(server['ports'] || {})
   server['folders'] = (server['folders'] || {})
 end
 
