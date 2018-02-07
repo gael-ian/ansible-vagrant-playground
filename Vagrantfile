@@ -42,11 +42,11 @@ Vagrant.configure(2) do |config|
 
         guest_mount_path = "/vagrant-#{guest_bind_path.gsub('/', '-')}".gsub(/(-{2,})/, '-').chomp('-')
         synced_options   = (options['synced'] || {}).reduce({}) do |opts, (name, value)|
-                             opts[name] = value == 'nil' ? nil : value.to_s
+                             opts[name.to_sym] = value == 'nil' ? nil : value
                              opts
                            end
         bindfs_options   = (options['bindfs'] || {}).reduce({}) do |opts, (name, value)|
-                             opts[name] = value == 'nil' ? nil : value.to_s
+                             opts[name.to_sym] = value == 'nil' ? nil : value
                              opts
                            end
 
