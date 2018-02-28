@@ -30,7 +30,12 @@ Vagrant.configure(2) do |config|
   # Servers
   servers.each do |server|
     config.vm.define server['name'] do |m|
+
       m.vm.hostname = server['name']
+      m.vm.provider "virtualbox" do |vb|
+        vb.name = server['name']
+      end
+
       m.vm.network "private_network", ip: server['ip']
 
       server['ports'].each do |guest, host|
@@ -58,7 +63,12 @@ Vagrant.configure(2) do |config|
   
   # Management node
   config.vm.define :manager do |m|
+
     m.vm.hostname = "manager"
+    m.vm.provider "virtualbox" do |vb|
+      vb.name = "manager"
+    end
+
     m.vm.network "private_network", ip: manager_ip
 
     m.vm.synced_folder "ansible/",  "/home/vagrant/ansible"
