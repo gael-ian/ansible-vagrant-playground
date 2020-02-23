@@ -17,7 +17,7 @@ apt-get -qq update > /dev/null
 
 echo "Installing Ansible"
 apt-get -qq install ansible python-pip python-jmespath sshpass rsync > /dev/null
-pip install ansible-lint
+pip install --system --quiet ansible-lint
 
 
 unset DEBIAN_FRONTEND
