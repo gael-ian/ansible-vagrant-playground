@@ -2,8 +2,10 @@
 # vi: set ft=ruby :
 
 require 'yaml'
+require 'digest/sha1'
 
 manager_ip = "192.168.50.5"
+manager_name = "manager-#{Digest::SHA1.hexdigest(__dir__)[0..8]}"
 
 # Load servers definition
 servers_definition = [ '../servers.yml', '../ansible/servers.yml' ].
@@ -22,7 +24,7 @@ end
 Vagrant.configure(2) do |config|
 
   # Common configuration
-  config.vm.box = "bento/debian-9"
+  config.vm.box = "bento/debian-10"
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "512"
   end
@@ -62,11 +64,11 @@ Vagrant.configure(2) do |config|
   end
   
   # Management node
-  config.vm.define :manager do |m|
+  config.vm.define manager_name do |m|
 
-    m.vm.hostname = "manager"
+    m.vm.hostname = manager_name
     m.vm.provider "virtualbox" do |vb|
-      vb.name = "manager"
+      vb.name = manager_name
     end
 
     m.vm.network "private_network", ip: manager_ip
