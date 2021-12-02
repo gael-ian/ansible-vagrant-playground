@@ -4,7 +4,7 @@
 require 'yaml'
 require 'digest/sha1'
 
-manager_ip = "192.168.50.5"
+manager_ip = "192.168.56.5"
 manager_name = "manager-#{Digest::SHA1.hexdigest(__dir__)[0..8]}"
 
 # Load servers definition
@@ -15,7 +15,7 @@ servers_definition = [ '../servers.yml', '../ansible/servers.yml' ].
 
 servers = YAML.load_file(servers_definition).each.with_index do |server, index|
   server['name']  ||= "server-#{index}"
-  server['ip']    ||= "192.168.50.#{20 + index}"
+  server['ip']    ||= "192.168.56.#{20 + index}"
   server['ports']   = { '80' => (8000 + index) }.merge(server['ports'] || {})
   server['folders'] = (server['folders'] || {})
 end
