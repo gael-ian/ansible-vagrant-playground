@@ -24,7 +24,7 @@ end
 Vagrant.configure(2) do |config|
 
   # Common configuration
-  config.vm.box = "bento/debian-10"
+  config.vm.box = "bento/debian-11"
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "512"
   end
